@@ -1,1 +1,1 @@
-web: gunicorn app:app --log-file=-
+web: DEBUG=jeny:* node server.js

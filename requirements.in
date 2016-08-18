@@ -1,8 +1,0 @@
-gunicorn
-blinker
-Flask
-Flask-Login
-Flask-SQLAlchemy
-Flask-Dance
-Flask-Dance[sqla]
-SQLAlchemy-Utils
