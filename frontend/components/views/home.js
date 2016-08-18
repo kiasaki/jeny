@@ -19,7 +19,7 @@ class Home extends Component {
     render() {
         return (
             <div className="home">
-                <h1 className="title">Home</h1>
+                <p className="text--center">...</p>
             </div>
         );
     }

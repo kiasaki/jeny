@@ -17,6 +17,7 @@ exports.setup = function(container) {
     container.load(require('./helpers/db'));
     container.load(require('./helpers/jwt'));
     container.load(require('./helpers/oauth'));
+    container.load(require('./helpers/storage'));
 
     // Setup app
     const express = require('express');

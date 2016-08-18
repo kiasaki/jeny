@@ -3,6 +3,12 @@ import {assocPath} from 'ramda';
 import {RESET, REQUEST, SUCCESS, FAILURE} from '@jeny/constants/api';
 
 const initialApiState = {
+    applications: {
+        list: null
+    },
+    servers: {
+        list: null
+    }
 };
 
 export default function apiReducer(state = initialApiState, action) {

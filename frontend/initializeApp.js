@@ -1,5 +1,6 @@
 import cookie from 'cookie';
 
+import API from '@jeny/utils/api';
 import {setCurrentUser} from '@jeny/actions/authentication';
 import {setLocation} from '@jeny/actions/routing';
 
@@ -12,4 +13,8 @@ export default function initializeApp(store) {
         name: tokenPayload.name,
         email: tokenPayload.email
     }));
+
+    API.config({
+        baseUrl: window.BASE_URL
+    });
 }

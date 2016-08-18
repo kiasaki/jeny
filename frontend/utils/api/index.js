@@ -1,6 +1,9 @@
 import URL from 'url';
 import {merge} from 'ramda';
 
+import ApplicationsAPI from './applications';
+import ServersAPI from './servers';
+
 const API_VERSION = 'v1';
 
 class APIClient {
@@ -9,7 +12,8 @@ class APIClient {
             baseUrl: ''
         };
 
-        // this.Applications = new ApplicationsAPI(this);
+        this.applications = new ApplicationsAPI(this);
+        this.servers = new ServersAPI(this);
     }
 
     config(config) {
@@ -19,7 +23,7 @@ class APIClient {
 
     apiUrl(path, query) {
         return URL.format({
-            pathname: this._config.baseUrl + API_VERSION + path,
+            pathname: this._config.baseUrl + '/' + API_VERSION + path,
             query: query
         });
     }

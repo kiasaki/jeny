@@ -19,10 +19,20 @@ html, body, .app, .view {
     box-sizing: border-box;
 }
 
-.text-center {
+.pull--left {
+    float: left;
+}
+.pull--right {
+    float: right;
+}
+
+.text--red {
+    color: #d43f3a;
+}
+.text--center {
     text-align: center;
 }
-.text-muted {
+.text--muted {
     color: #828282; /* gray */
 }
 
@@ -95,7 +105,7 @@ a.dropdown__item:hover {
     width: 95rem;
     margin: 0 auto;
     background: #fff;
-    height: 100%;
+    min-height: 100%;
 }
 .content .title {
     font-size: 2.6rem;
@@ -144,10 +154,12 @@ a.dropdown__item:hover {
     font-weight: 300;
     font-size: 2.8rem;
     color: #fff;
+    padding: 1.8rem 0;
+    margin: 0;
 }
 .view__header__bottom-row {
     background: #43B9A3;
-    margin: 1.5rem -3rem 0;
+    margin: 0 -3rem;
     padding: 0 3rem;
 }
 .view__header__bottom-row a {
@@ -167,4 +179,58 @@ a.dropdown__item:hover {
     cursor: pointer;
     background: #3EAC97;
     border-bottom: 2px solid #fff;
+}
+
+.hosts {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -1rem;
+}
+.hosts .server-card {
+    flex: 0 0 calc(50% - 2rem);
+    margin: 1rem;
+}
+
+.server-card {
+    padding: 0.6rem;
+    background: #fafafa;
+    border: 2px solid #888;
+    border-radius: 3px;
+    color: #222;
+}
+.server-card__name {
+    float: left;
+    font-weight: bold;
+}
+.server-card__state {
+    float: right;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 100%;
+    background: #111;
+    margin: 0.6rem 0 0 0.6rem;
+}
+.server-card__state--running {
+    background: #5cb85c;
+}
+.server-card__state--stopped {
+    background: #d43f3a;
+}
+.server-card__az {
+    float: right;
+    color: #888;
+}
+.server-card__id {
+    font-size: 1.4rem;
+    color: #888;
+}
+.server-card__tags {
+    float: left;
+    font-size: 1.4rem;
+    font-style: italic;
+}
+.server-card__ip {
+    float: right;
+    font-size: 1.4rem;
+    color: #888;
 }

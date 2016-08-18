@@ -14,7 +14,7 @@ class View extends Component {
                         <div className="view__header__top-row clearfix">
                             <nav className="view__header__nav">
                                 <Link to="/applications">Applications</Link>
-                                <Link to="/hosts">Hosts</Link>
+                                <Link to="/servers">Servers</Link>
                             </nav>
                             <div className="view__header__user dropdown__container">
                                 {currentUser.name} ({currentUser.email}) ▾
