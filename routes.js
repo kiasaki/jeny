@@ -7,6 +7,7 @@ module.exports = function(container) {
     const OAuth = container.get('oauth');
 
     app.get('/oauth/login', OAuth.handleLogin);
+    app.get('/oauth/logout', OAuth.handleLogout);
     app.get('/oauth/callback', OAuth.handleCallback);
 
     app.use(OAuth.requireUserMiddleware);

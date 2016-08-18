@@ -11,6 +11,10 @@ body {
     font-size: 1.6rem;
 }
 
+html, body, .app, .view {
+    height: 100%;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -48,4 +52,119 @@ body {
     padding: 0.6rem 1.2rem;
     text-decoration: none;
     text-align: center;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.dropdown__container {
+    cursor: pointer;
+    position: relative;
+}
+.dropdown__container:hover .dropdown {
+    display: block;
+}
+.dropdown {
+    position: absolute;
+    display: none;
+    top: 100%;
+    left: 0;
+    padding: 0.6rem 0;
+    background: #fff;
+    min-width: 16rem;
+}
+.dropdown__item {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background: #fff;
+    color: #222;
+    text-decoration: none;
+    width: 100%;
+    transition: background 200ms;
+}
+a.dropdown__item:hover {
+    cursor: pointer;
+    background: #efefef;
+}
+
+.content {
+    padding: 3rem;
+    width: 95rem;
+    margin: 0 auto;
+    background: #fff;
+    height: 100%;
+}
+.content .title {
+    font-size: 2.6rem;
+    font-weight: 300;
+    margin: 0 0 2.4rem;
+}
+
+.view__header {
+    background: rgba(75, 206, 181, 0.5);
+}
+.view__header .content {
+    background: #4BCEB5;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.view__header__nav {
+    float: left;
+}
+.view__header__nav a {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background: #43B9A3;
+    text-decoration: none;
+    color: #fff;
+    margin-right: 0.6rem;
+    transition: background 200ms;
+}
+.view__header__nav a:hover {
+    cursor: pointer;
+    background: #3EAC97;
+}
+.view__header__user {
+    float: right;
+    padding: 0.6rem 1.2rem;
+    color: #fff;
+}
+.view__header__user:hover {
+    background: #3EAC97;
+}
+.view__header__user .dropdown {
+    left: auto;
+    right: 0;
+    width: 100%;
+}
+.view__header__middle-row h1 {
+    font-weight: 300;
+    font-size: 2.8rem;
+    color: #fff;
+}
+.view__header__bottom-row {
+    background: #43B9A3;
+    margin: 1.5rem -3rem 0;
+    padding: 0 3rem;
+}
+.view__header__bottom-row a {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background: #43B9A3;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    color: #fff;
+    transition: background 200ms, border 200ms;
+}
+.view__header__bottom-row a.active {
+    background: #3EAC97;
+    border-bottom: 2px solid #fff;
+}
+.view__header__bottom-row a:hover {
+    cursor: pointer;
+    background: #3EAC97;
+    border-bottom: 2px solid #fff;
 }

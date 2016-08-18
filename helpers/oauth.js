@@ -17,6 +17,7 @@ class OAuth {
 
         this.requireUserMiddleware = this.requireUserMiddleware.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
+        this.handleLogout = this.handleLogout.bind(this);
         this.handleCallback = this.handleCallback.bind(this);
     }
 
@@ -57,6 +58,11 @@ class OAuth {
         res.redirect(url);
     }
 
+    handleLogout(req, res) {
+        res.clearCookie('jenyToken');
+        res.redirect('/');
+    }
+
     handleCallback(req, res) {
         const {OAuth2Client, jwt} = this;
 
@@ -83,7 +89,7 @@ class OAuth {
                 const name = profile.displayName || email.split('@')[0];
                 const token = jwt.sign({name, email}, 14 * 24 * 60);
 
-                const inTwoWeeks = new Date(Date.now() + (14 * 24 * 60 * 1000));
+                const inTwoWeeks = new Date(Date.now() + (14 * 24 * 60 * 60 * 1000));
                 res.cookie('jenyToken', token, {expires: inTwoWeeks});
                 res.redirect('/');
             });

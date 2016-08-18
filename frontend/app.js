@@ -24,7 +24,7 @@ initializeApp(store);
 
 render((
     <Provider store={store}>
-        <div>
+        <div style={{height: '100%'}}>
             <Router />
         </div>
     </Provider>
