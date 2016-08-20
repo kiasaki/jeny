@@ -4,7 +4,12 @@ import {RESET, REQUEST, SUCCESS, FAILURE} from '@jeny/constants/api';
 
 const initialApiState = {
     applications: {
-        list: null
+        list: null,
+        get: {}
+    },
+    environments: {
+        list: {},
+        get: {}
     },
     servers: {
         list: null

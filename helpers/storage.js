@@ -20,7 +20,7 @@ class Storage {
     }
 
     get(file) {
-        return this.storageImplementation.list(file);
+        return this.storageImplementation.get(file);
     }
 }
 

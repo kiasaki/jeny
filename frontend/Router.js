@@ -5,6 +5,7 @@ import {Router as EnrouteRouter, Route} from 'react-enroute';
 
 import LayoutsView from '@jeny/components/layouts/view';
 import ViewsHome from '@jeny/components/views/home';
+import ViewsApplication from '@jeny/components/views/application';
 import ViewsApplications from '@jeny/components/views/applications';
 import ViewsServers from '@jeny/components/views/servers';
 import ViewsNotFound from '@jeny/components/views/not-found';
@@ -22,6 +23,7 @@ class Router extends Component {
                 <Route path="" component={LayoutsView}>
                     <Route path="/" component={ViewsHome} />
                     <Route path="/applications" component={ViewsApplications} />
+                    <Route path="/applications/:id" component={ViewsApplication} />
                     <Route path="/servers" component={ViewsServers} />
                     <Route path="/*" component={ViewsNotFound} />
                 </Route>

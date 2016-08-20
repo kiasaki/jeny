@@ -2,6 +2,7 @@ import URL from 'url';
 import {merge} from 'ramda';
 
 import ApplicationsAPI from './applications';
+import EnvironmentsAPI from './environments';
 import ServersAPI from './servers';
 
 const API_VERSION = 'v1';
@@ -13,6 +14,7 @@ class APIClient {
         };
 
         this.applications = new ApplicationsAPI(this);
+        this.environments = new EnvironmentsAPI(this);
         this.servers = new ServersAPI(this);
     }
 

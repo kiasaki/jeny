@@ -113,6 +113,51 @@ a.dropdown__item:hover {
     margin: 0 0 2.4rem;
 }
 
+
+.tabs {
+    padding: 0.5rem 0.5rem 0;
+    display: flex;
+    background: #fff;
+    border-bottom: 2px solid #ccc;
+}
+.tabs__spacer {
+    flex: 1 1;
+}
+.tabs__add {
+    font-size: 1.4rem;
+    display: inline-block;
+    padding: 0 0.8rem;
+    cursor: pointer;
+    color: #828282; /* gray */
+    vertical-align: sub;
+}
+.tabs__add:hover {
+    color: #111; /* black */
+}
+.tabs__tab {
+    flex: 0 1 16rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 1.3rem;
+    text-align: left;
+    border: 2px solid #ccc;
+    background: #f8f8f8; /* whiteDarkish */
+    border-radius: 3px 3px 0 0;
+    position: relative;
+    bottom: -2px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+.tabs__tab:hover,
+.tabs__tab--active {
+    border-bottom: 2px solid #fff;
+    background: #fff; /* white */
+}
+.tabs__content {
+    border: 2px solid #ccc;
+    border-top: none;
+}
+
+
 .view__header {
     background: rgba(75, 206, 181, 0.5);
 }
@@ -233,4 +278,24 @@ a.dropdown__item:hover {
     float: right;
     font-size: 1.4rem;
     color: #888;
+}
+
+.application-card {
+    display: block;
+    padding: 0.6rem 1.2rem;
+    background: #fafafa;
+    border: 2px solid #888;
+    border-radius: 3px;
+    color: #222;
+    margin-bottom: 1.2rem;
+    text-decoration: none;
+}
+.application-card:hover {
+    cursor: pointer;
+    border-color: #444;
+    background: #efefef;
+}
+.application-card header {
+    font-size: 1.8rem;
+    font-weight: 300;
 }

@@ -1,12 +1,14 @@
 const R = require('ramda');
 const path = require('path');
 const AWS = require('aws-sdk');
+const yaml = require('js-yaml');
 
 AWS.config.update({region:'us-east-1'});
 
 module.exports = function(container) {
     const app = container.get('app');
     const config = container.get('config');
+    const storage = container.get('storage');
 
     const OAuth = container.get('oauth');
 
@@ -15,6 +17,44 @@ module.exports = function(container) {
     app.get('/oauth/callback', OAuth.handleCallback);
 
     app.use(OAuth.requireUserMiddleware);
+
+    function handleError(res, err) {
+        res.status(500).json({errors: [{message: err.message}]});
+    }
+
+    app.get('/api/v1/applications', (req, res) => {
+        const folder = 'applications';
+        return storage.list(folder).then(files => {
+            return Promise.all(files.map(application => {
+                return storage.get(`applications/${application}/meta.yml`)
+                    .then(text => yaml.safeLoad(text))
+                    .then(R.assoc('id', application));
+            }));
+        }).then(items => {
+            res.json({results: items});
+        }).catch(handleError.bind(null, res));
+    });
+
+    app.get('/api/v1/applications/:id', (req, res) => {
+        const file = `applications/${req.params.id}/meta.yml`;
+        return storage.get(file).then(text => {
+            res.json(R.assoc('id', req.params.id, yaml.safeLoad(text)));
+        });
+    });
+
+    app.get('/api/v1/applications/:id/environments', (req, res) => {
+        const folder = `applications/${req.params.id}/environments`;
+        return storage.list(folder).then(files => {
+            return Promise.all(files.map(environment => {
+                return storage.get(`${folder}/${environment}/meta.yml`)
+                    .then(text => yaml.safeLoad(text))
+                    .then(R.assoc('id', environment))
+                    .then(R.assoc('applicationId', req.params.id));
+            }));
+        }).then(items => {
+            res.json({results: items});
+        }).catch(handleError.bind(null, res));
+    });
 
     app.get('/api/v1/servers', (req, res) => {
         var ec2 = new AWS.EC2({apiVersion: '2016-04-01'});
@@ -25,7 +65,7 @@ module.exports = function(container) {
             }]
         }, function(err, data) {
             if (err) {
-                res.status(500).json({errors: [{message: err.message}]});
+                handleError(res, err);
                 return;
             }
 

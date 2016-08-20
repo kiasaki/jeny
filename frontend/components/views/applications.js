@@ -5,8 +5,9 @@ import {find, propEq} from 'ramda';
 import {REQUEST, SUCCESS, FAILURE} from '@jeny/constants/api';
 import {setTitle, setButtons} from '@jeny/actions/view';
 import {applicationsList} from '@jeny/actions/api';
+import Link from '@jeny/components/link';
 
-class Servers extends Component {
+class Applications extends Component {
     componentWillMount() {
         const {dispatch} = this.props;
 
@@ -33,8 +34,24 @@ class Servers extends Component {
             );
         }
 
+        if (applicationsRequest.content.results.length === 0) {
+            return (
+                <p className="text--center">You have 0 applications configured</p>
+            );
+        }
+
         return (
-            <div>asd</div>
+            <div className="applications">
+                {applicationsRequest.content.results.map(application => (
+                    <Link
+                        className="application-card"
+                        key={application.id}
+                        to={'/applications/' + application.id}
+                    >
+                        <header>{application.name}</header>
+                    </Link>
+                ))}
+            </div>
         );
     }
 }
@@ -45,4 +62,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(Servers);
+export default connect(mapStateToProps)(Applications);
