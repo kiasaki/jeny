@@ -48,7 +48,7 @@ class Applications extends Component {
                         key={application.id}
                         to={'/applications/' + application.id}
                     >
-                        <header>{application.name}</header>
+                        <header>{application.id}</header>
                     </Link>
                 ))}
             </div>

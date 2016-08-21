@@ -5,16 +5,14 @@ import {map, head, find, propEq} from 'ramda';
 import {REQUEST, SUCCESS, FAILURE} from '@jeny/constants/api';
 import {setTitle, setButtons} from '@jeny/actions/view';
 import {applicationsGet, environmentsList} from '@jeny/actions/api';
+import {navigate} from '@jeny/utils/routing';
 import Link from '@jeny/components/link';
 import Tabs from '@jeny/components/tabs';
+import Environment from '@jeny/components/application/environment';
 
 class Application extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            selectedEnvironment: null
-        };
 
         this.onTabSelect = this.onTabSelect.bind(this);
     }
@@ -22,7 +20,6 @@ class Application extends Component {
     componentWillMount() {
         const {dispatch, params} = this.props;
         const {id} = params;
-
 
         dispatch(setTitle('Applications: ' + id));
         dispatch(setButtons([
@@ -36,27 +33,49 @@ class Application extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (
-            !this.state.selectedEnvironment &&
+            !this.props.params.environmentId &&
             nextProps.environmentsRequest.status === SUCCESS &&
             nextProps.environmentsRequest.content.results.length > 0
         ) {
             const environments = nextProps.environmentsRequest.content.results;
-            this.setState({selectedEnvironment: head(environments).id});
+
+            // Set first environment in list as currently selected env
+            const applicationId = this.props.params.id;
+            const environmentId = head(environments).id;
+            navigate(`/applications/${applicationId}/${environmentId}`);
         }
     }
 
     onTabSelect(selectedEnvironment) {
-        this.setState({selectedEnvironment: selectedEnvironment.id});
+        const applicationId = this.props.params.id;
+        const environmentId = selectedEnvironment.id;
+        navigate(`/applications/${applicationId}/${environmentId}`);
     }
 
     renderCurrentEnvironment() {
+        const {params, applicationRequest} = this.props;
+        const {id, environmentId, deploymentId} = params;
+
+        if (!environmentId) {
+            return (
+                <p className="text--center">
+                    Loading environments...
+                </p>
+            );
+        }
+
         return (
-            <div>{this.state.selectedEnvironment}</div>
+            <Environment
+                application={applicationRequest.content}
+                applicationId={id}
+                environmentId={environmentId}
+                deploymentId={deploymentId}
+            />
         );
     }
 
     render() {
-        const {applicationRequest, environmentsRequest} = this.props;
+        const {applicationRequest, environmentsRequest, params} = this.props;
 
         if (
             !applicationRequest || applicationRequest.status === REQUEST ||
@@ -94,7 +113,7 @@ class Application extends Component {
                 <div className="tabs__container">
                     <Tabs
                         items={tabItems}
-                        selectedItem={this.state.selectedEnvironment}
+                        selectedItem={params.environmentId}
                         onSelect={this.onTabSelect}
                     />
                     <div className="tabs__content">

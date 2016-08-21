@@ -18,12 +18,14 @@ class Router extends Component {
             <EnrouteRouter
                 location={this.props.location}
                 query={query}
-                hash={window.location.hash}
+                hash={window.location.hash.slice(1)}
             >
                 <Route path="" component={LayoutsView}>
                     <Route path="/" component={ViewsHome} />
                     <Route path="/applications" component={ViewsApplications} />
                     <Route path="/applications/:id" component={ViewsApplication} />
+                    <Route path="/applications/:id/:environmentId" component={ViewsApplication} />
+                    <Route path="/applications/:id/:environmentId/:deploymentId" component={ViewsApplication} />
                     <Route path="/servers" component={ViewsServers} />
                     <Route path="/*" component={ViewsNotFound} />
                 </Route>

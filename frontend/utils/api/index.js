@@ -3,6 +3,7 @@ import {merge} from 'ramda';
 
 import ApplicationsAPI from './applications';
 import EnvironmentsAPI from './environments';
+import DeploymentsAPI from './deployments';
 import ServersAPI from './servers';
 
 const API_VERSION = 'v1';
@@ -15,6 +16,7 @@ class APIClient {
 
         this.applications = new ApplicationsAPI(this);
         this.environments = new EnvironmentsAPI(this);
+        this.deployments = new DeploymentsAPI(this);
         this.servers = new ServersAPI(this);
     }
 

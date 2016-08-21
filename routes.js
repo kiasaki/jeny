@@ -2,6 +2,8 @@ const R = require('ramda');
 const path = require('path');
 const AWS = require('aws-sdk');
 const yaml = require('js-yaml');
+const moment = require('moment');
+const debug = require('debug')('jeny:routes');
 
 AWS.config.update({region:'us-east-1'});
 
@@ -53,6 +55,90 @@ module.exports = function(container) {
             }));
         }).then(items => {
             res.json({results: items});
+        }).catch(handleError.bind(null, res));
+    });
+
+    app.get('/api/v1/applications/:applicationId/environments/:environmentId/deployments', (req, res) => {
+        const {applicationId, environmentId} = req.params;
+        const folder = (
+            `applications/${applicationId}/` +
+            `environments/${environmentId}/deployments`
+        );
+
+        const now = moment().utc();
+        // TODO take start date as query param
+        const aWeekAgo = moment().utc().subtract(7, 'days');
+
+        const monthDayFolders = storage.list(folder).then(monthFolders => {
+            // Filter months to look in and collect day folders
+            const filteredMonthFolders = R.filter(monthFolder => {
+                return moment(monthFolder, 'YYYY-MM').utc().isAfter(
+                    aWeekAgo.subtract(1, 'month')
+                );
+            }, monthFolders);
+
+            return Promise.all(R.map(monthFolder => (
+                storage.list(folder + '/' + monthFolder).then(dayFolder => {
+                    // Add the year and month to the day folder
+                    return `${monthFolder}/${dayFolder}`;
+                })
+            ), filteredMonthFolders));
+        }).then(R.flatten).then(dayFolders => {
+            // Collect deployments in each day folder
+            return Promise.all(dayFolders.map(dayFolder => {
+                return storage.list(`${folder}/${dayFolder}`)
+                    .then(R.map(deploymentFolder => (
+                        // Add the day to the deployment folder
+                        `${dayFolder}/${deploymentFolder}`
+                    )));
+            }));
+        }).then(R.flatten).then(deploymentFolders => {
+            // Get deployment objects
+            return Promise.all(R.map(deploymentFolder => {
+                return storage.get(`${folder}/${deploymentFolder}/meta.yml`)
+                    .then(text => yaml.safeLoad(text))
+                    .then(R.assoc('id', deploymentFolder.split('/')[2]))
+                    .then(R.assoc('applicationId', applicationId))
+                    .then(R.assoc('environmentId', environmentId));
+            }, deploymentFolders));
+        }).then(items => {
+            res.json({results: items});
+        }).catch(handleError.bind(null, res));
+    });
+
+    app.get('/api/v1/deployments/:applicationId/:environmentId/:deploymentId', (req, res) => {
+        const {applicationId, environmentId, deploymentId} = req.params;
+        const folder = (
+            `applications/${applicationId}/` +
+            `environments/${environmentId}/deployments/` +
+            deploymentId.slice(0, 4) + '-' +
+            deploymentId.slice(5, 7) + '/' +
+            deploymentId.slice(8, 10) + '/' +
+            deploymentId
+        );
+
+        return storage.get(`${folder}/meta.yml`)
+            .then(text => yaml.safeLoad(text))
+            .then(R.assoc('id', deploymentId))
+            .then(R.assoc('applicationId', applicationId))
+            .then(R.assoc('environmentId', environmentId))
+            .then(deployment => res.json(deployment))
+            .catch(handleError.bind(null, res));
+    });
+
+    app.get('/api/v1/deployments/:applicationId/:environmentId/:deploymentId/log', (req, res) => {
+        const {applicationId, environmentId, deploymentId} = req.params;
+        const folder = (
+            `applications/${applicationId}/` +
+            `environments/${environmentId}/deployments/` +
+            deploymentId.slice(0, 4) + '-' +
+            deploymentId.slice(5, 7) + '/' +
+            deploymentId.slice(8, 10) + '/' +
+            deploymentId
+        );
+
+        return storage.get(`${folder}/log.txt`).then(text => {
+            res.send(text);
         }).catch(handleError.bind(null, res));
     });
 

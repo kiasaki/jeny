@@ -11,6 +11,11 @@ const initialApiState = {
         list: {},
         get: {}
     },
+    deployments: {
+        list: {},
+        get: {},
+        log: {}
+    },
     servers: {
         list: null
     }

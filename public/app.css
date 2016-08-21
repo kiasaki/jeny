@@ -19,6 +19,24 @@ html, body, .app, .view {
     box-sizing: border-box;
 }
 
+table.table {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 1.25em;
+    border-collapse: collapse;
+}
+.table th, .table tr, .table td {
+    border: 1px solid #888;
+    padding: 0.3125rem 0.625rem;
+    color: #888;
+    font-size: 0.875em;
+    font-family: 'Source Code Pro', 'Courier New', monospace;
+}
+.table th {
+    font-weight: normal;
+    background: #f8f8f8;
+}
+
 .pull--left {
     float: left;
 }
@@ -33,7 +51,7 @@ html, body, .app, .view {
     text-align: center;
 }
 .text--muted {
-    color: #828282; /* gray */
+    color: #888;
 }
 
 .unauthorized {
@@ -115,10 +133,9 @@ a.dropdown__item:hover {
 
 
 .tabs {
-    padding: 0.5rem 0.5rem 0;
+    padding: 0 0.5rem 0;
     display: flex;
     background: #fff;
-    border-bottom: 2px solid #ccc;
 }
 .tabs__spacer {
     flex: 1 1;
@@ -154,7 +171,7 @@ a.dropdown__item:hover {
 }
 .tabs__content {
     border: 2px solid #ccc;
-    border-top: none;
+    border-radius: 3px;
 }
 
 
@@ -298,4 +315,100 @@ a.dropdown__item:hover {
 .application-card header {
     font-size: 1.8rem;
     font-weight: 300;
+}
+
+.environment {
+    display: flex;
+}
+.environment__deployments {
+    flex: 0 0 300px;
+    border-right: 2px solid #ccc;
+}
+.environment__deployment {
+    flex: 1 1;
+}
+
+.deployment-card {
+    padding: 1.2rem;
+    border-bottom: 2px solid #ccc;
+}
+.deployment-card--active,
+.deployment-card:hover {
+    cursor: pointer;
+    background: #efefef;
+}
+.deployment-card:last-child {
+    border-bottom: none;
+}
+.deployment-card--new {
+    color: #3eac97;
+}
+.deployment-card__id {
+    font-size: 1.6rem;
+    font-weight: 300;
+    margin: 0;
+}
+.deployment-card__by,
+.deployment-card__status,
+.deployment-card__branch {
+    font-size: 1.4rem;
+    color: #888;
+}
+.deployment-card__status {
+    font-weight: bold;
+}
+.deployment-card__status--running {
+    color: #447bdc;
+}
+.deployment-card__status--success {
+    color: #5cb85c;
+}
+.deployment-card__status--failing,
+.deployment-card__status--failure {
+    color: #d43f3a;
+}
+.deployment-card__by {
+    font-style: italic;
+}
+
+
+.deployment {
+    padding: 1.8rem;
+}
+.deployment__id {
+    font-size: 2.2rem;
+    font-weight: 300;
+    margin-bottom: 1.8rem;
+}
+.deployment__status {
+    font-weight: bold;
+}
+.deployment__status--running {
+    color: #447bdc;
+}
+.deployment__status--success {
+    color: #5cb85c;
+}
+.deployment__status--failing,
+.deployment__status--failure {
+    color: #d43f3a;
+}
+.deployment__info {
+    margin-bottom: 1.8rem;
+}
+.deployment__servers__heading {
+    font-size: 2rem;
+    margin-bottom: 0.6rem;
+}
+.deployment__log__heading {
+    font-size: 2rem;
+    margin-bottom: 0.6rem;
+}
+.deployment__log__contents {
+    background: #222;
+    color: #efefef;
+    padding: 1.2rem;
+    font-size: 1.3rem;
+    margin: 0;
+    border-radius: 3px;
 }
