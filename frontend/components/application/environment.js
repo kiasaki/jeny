@@ -25,11 +25,14 @@ class Environment extends Component {
         const {
             dispatch,
             applicationId, environmentId, deploymentId,
-            deploymentRequest, deploymentLogRequest
-        } = this.props;
+            deploymentsRequest, deploymentRequest, deploymentLogRequest
+        } = nextProps;
         const fullEnvironmentId = applicationId + '/' + environmentId;
         const fullDeploymentId = fullEnvironmentId + '/' + deploymentId;
 
+        if (!deploymentsRequest) {
+            dispatch(deploymentsList(fullEnvironmentId));
+        }
         if (deploymentId && !deploymentRequest) {
             dispatch(deploymentsGet(fullDeploymentId));
         }
@@ -215,9 +218,9 @@ class Environment extends Component {
                     </div>
                     {map(this.renderDeploymentCard.bind(this), deployments)}
                     {deployments.length === 0 ? (
-                        <div className="text--center">
+                        <p className="text--center">
                             No deployment in the past week.
-                        </div>
+                        </p>
                     ) : null}
                 </div>
                 <div className="environment__deployment">
