@@ -2,12 +2,14 @@ import {createStore, combineReducers, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import {merge} from 'ramda';
 
+import applicationReducer from '@jeny/reducers/application';
 import apiReducer from '@jeny/reducers/api';
 import viewReducer from '@jeny/reducers/view';
 import authenticationReducer from '@jeny/reducers/authentication';
 import routingReducer from '@jeny/reducers/routing';
 
 const rootReducer = combineReducers({
+    application: applicationReducer,
     api: apiReducer,
     view: viewReducer,
     authentication: authenticationReducer,

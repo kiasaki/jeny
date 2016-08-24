@@ -11,7 +11,7 @@ exports.setup = function(container) {
     // Load config
     const config = container.get('config');
     config.loadFromEnv();
-    config.set('root', path.resolve(__dirname));
+    config.set('root', path.resolve(path.join(__dirname, '..')));
 
     // Load up code
     container.load(require('./helpers/db'));
@@ -21,7 +21,7 @@ exports.setup = function(container) {
 
     // Setup app
     const express = require('express');
-    const publicPath = path.join(__dirname, 'public');
+    const publicPath = path.join(__dirname, '..', 'public');
     container.set('app', express());
     const app = container.get('app');
 

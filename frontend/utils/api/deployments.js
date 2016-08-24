@@ -1,13 +1,8 @@
 import API from './api';
 
 class DeploymentsAPI extends API {
-    list(fullEnvironmentId) {
-        const [applicationId, environmentId] = fullEnvironmentId.split('/');
-        const path = (
-            `/applications/${applicationId}` +
-            `/environments/${environmentId}/deployments`
-        );
-        return this.apiClient.request('GET', path);
+    list() {
+        return this.apiClient.request('GET', '/deployments');
     }
 
     get(deploymentId) {

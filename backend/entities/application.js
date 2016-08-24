@@ -7,7 +7,9 @@ class Application extends Entity {
 Application.prototype.fields = [
     'id',
     'githubRepo',
-    'variables'
+    'variables',
+    'ansibleTags',
+    'environments'
 ];
 
 module.exports = Application;

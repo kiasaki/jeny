@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {map, head, find, propEq} from 'ramda';
+import {map, head, find, propEq, values} from 'ramda';
 
 import {REQUEST, SUCCESS, FAILURE} from '@jeny/constants/api';
 import {setTitle, setButtons} from '@jeny/actions/view';
-import {applicationsGet, environmentsList} from '@jeny/actions/api';
+import {fetchAll} from '@jeny/actions/application';
 import {navigate} from '@jeny/utils/routing';
 import Link from '@jeny/components/link';
 import Tabs from '@jeny/components/tabs';
@@ -27,21 +27,13 @@ class Application extends Component {
             //{link: '/applications/' + id + '#config', label: 'Configuration'}
         ]));
 
-        dispatch(applicationsGet(id));
-        dispatch(environmentsList(id));
+        dispatch(fetchAll(id));
     }
 
     componentWillReceiveProps(nextProps) {
-        if (
-            !this.props.params.environmentId &&
-            nextProps.environmentsRequest.status === SUCCESS &&
-            nextProps.environmentsRequest.content.results.length > 0
-        ) {
-            const environments = nextProps.environmentsRequest.content.results;
-
-            // Set first environment in list as currently selected env
+        if (!this.props.params.environmentId && nextProps.application) {
             const applicationId = this.props.params.id;
-            const environmentId = head(environments).id;
+            const environmentId = head(nextProps.application.environments).id;
             navigate(`/applications/${applicationId}/${environmentId}`);
         }
     }
@@ -53,7 +45,7 @@ class Application extends Component {
     }
 
     renderCurrentEnvironment() {
-        const {params, applicationRequest} = this.props;
+        const {params, application} = this.props;
         const {id, environmentId, deploymentId} = params;
 
         if (!environmentId) {
@@ -66,7 +58,7 @@ class Application extends Component {
 
         return (
             <Environment
-                application={applicationRequest.content}
+                application={application}
                 applicationId={id}
                 environmentId={environmentId}
                 deploymentId={deploymentId}
@@ -75,31 +67,19 @@ class Application extends Component {
     }
 
     render() {
-        const {applicationRequest, environmentsRequest, params} = this.props;
+        const {application, params} = this.props;
 
-        if (
-            !applicationRequest || applicationRequest.status === REQUEST ||
-            !environmentsRequest || environmentsRequest.status === REQUEST
-        ) {
-            return (
-                <p className="text--center">Loading...</p>
-            );
+        if (!application) {
+            return <p className="text--center">Loading...</p>;
         }
 
-        if (
-            applicationRequest.status === FAILURE ||
-            environmentsRequest.status === FAILURE
-        ) {
-            return (
-                <p className="text--center text--red">Error fetching application.</p>
-            );
-        }
+        const environments = values(application.environments);
 
-        const environments = environmentsRequest.content.results;
-
-        if (environments.length === 0) {
+        if (!environments || environments.length === 0) {
             return (
-                <p className="text--center">This application has no environment configured!</p>
+                <p className="text--center">
+                    This application has no environment configured!
+                </p>
             );
         }
 
@@ -129,8 +109,7 @@ function mapStateToProps(state, ownProps) {
     const id = ownProps.params.id;
 
     return {
-        applicationRequest: state.api.applications.get[id],
-        environmentsRequest: state.api.environments.list[id]
+        application: state.application[id]
     };
 }
 

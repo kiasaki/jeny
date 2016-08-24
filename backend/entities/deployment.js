@@ -4,10 +4,9 @@ class Deployment extends Entity {
 
 }
 
-Deployment.folder = function(applicationId, environmentId, deploymentId) {
+Deployment.folder = function(deploymentId) {
     return (
-        `applications/${applicationId}/` +
-        `environments/${environmentId}/deployments/` +
+        `deployments/` +
         deploymentId.slice(0, 4) + '-' +
         deploymentId.slice(5, 7) + '/' +
         deploymentId.slice(8, 10) + '/' +

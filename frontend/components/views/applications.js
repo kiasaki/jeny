@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {find, propEq} from 'ramda';
+import {find, propEq, values} from 'ramda';
 
 import {REQUEST, SUCCESS, FAILURE} from '@jeny/constants/api';
 import {setTitle, setButtons} from '@jeny/actions/view';
-import {applicationsList} from '@jeny/actions/api';
+import {fetchAll} from '@jeny/actions/application';
 import Link from '@jeny/components/link';
 
 class Applications extends Component {
@@ -16,7 +16,7 @@ class Applications extends Component {
             {link: '/applications', label: 'Applications', active: true}
         ]));
 
-        dispatch(applicationsList());
+        dispatch(fetchAll());
     }
 
     render() {

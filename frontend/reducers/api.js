@@ -7,12 +7,8 @@ const initialApiState = {
         list: null,
         get: {}
     },
-    environments: {
-        list: {},
-        get: {}
-    },
     deployments: {
-        list: {},
+        list: null,
         get: {},
         log: {}
     },

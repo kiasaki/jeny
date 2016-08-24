@@ -1,5 +1,5 @@
-const container = require('./container');
+const container = require('./backend/container');
 
-require('./app').setup(container);
+require('./backend/app').setup(container);
 
 container.get('app').start();
