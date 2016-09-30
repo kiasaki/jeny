@@ -10,10 +10,14 @@ const initialApiState = {
     deployments: {
         list: null,
         get: {},
-        log: {}
+        log: {},
+        create: null
     },
     servers: {
         list: null
+    },
+    git: {
+        ref: {}
     }
 };
 

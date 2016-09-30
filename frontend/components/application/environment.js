@@ -7,7 +7,7 @@ import {REQUEST, SUCCESS, FAILURE} from '@jeny/constants/api';
 import {navigate} from '@jeny/utils/routing';
 import {classNames} from '@jeny/utils';
 import {
-    deploymentsList, deploymentsGet, deploymentsLog
+    deploymentsList, deploymentsGet, deploymentsLog, gitRef
 } from '@jeny/actions/api';
 
 const JSON_DATE_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]';
@@ -30,22 +30,34 @@ class Environment extends Component {
         const {
             dispatch,
             applicationId, environmentId, deploymentId,
-            deploymentsRequest, deploymentRequest, deploymentLogRequest
+            application, environment,
+            deploymentsRequest, deploymentRequest, deploymentLogRequest, gitRefRequests
         } = nextProps;
 
         if (!deploymentsRequest) {
             dispatch(deploymentsList());
         }
-        if (deploymentId && !deploymentRequest) {
+        if (deploymentId && deploymentId !== 'new' && !deploymentRequest) {
             dispatch(deploymentsGet(deploymentId));
         }
-        if (deploymentId && !deploymentLogRequest) {
+        if (deploymentId && deploymentId !== 'new' && !deploymentLogRequest) {
             dispatch(deploymentsLog(deploymentId));
+        }
+
+        const lastDeployBranch = application.githubRepo + ':heads/' + environment.deployedBranch;
+        if (environment && !gitRefRequests[lastDeployBranch]) {
+            dispatch(gitRef(lastDeployBranch));
+        }
+        const defaultBranch = environment.defaultBranch;
+        const defaultBranchRef = application.githubRepo + ':heads/' + defaultBranch;
+        if (!gitRefRequests[defaultBranchRef]) {
+            dispatch(gitRef(defaultBranchRef));
         }
     }
 
     onNewDeployment() {
-        this.setState({creatingDeployment: true});
+        const {applicationId, environmentId, deploymentId} = this.props;
+        navigate(`/applications/${applicationId}/${environmentId}/new`);
     }
 
     renderDeploymentCard(deployment) {
@@ -91,23 +103,83 @@ class Environment extends Component {
     }
 
     renderNewDeployment() {
-        const {application, environment} = this.props;
+        const {dispatch, application, environment, gitRefRequests} = this.props;
         const defaultBranch = environment.defaultBranch;
         const defaultTags = keys(application.ansibleTags);
 
+        const toDeployBranch = this.refs.newDeployBranch ? this.refs.newDeployBranch.value : defaultBranch;
+        const lastDeployRefRequest = gitRefRequests[application.githubRepo + ':heads/' + environment.deployedBranch];
+        const toDeployRefRequest = gitRefRequests[application.githubRepo + ':heads/' + toDeployBranch];
+
+        const onClick = () => {
+            const branch = this.refs.newDeployBranch.value;
+            const tags = this.refs.newDeployTags.value;
+
+            dispatch(deploymentsCreate({
+                applicationId: application.id,
+                environmentId: environment.id,
+                branch: branch.id,
+                tags: tags.split(',')
+            }));
+        };
+
+        const onBranchUpdate = event => {
+            const ref = 'heads/' + event.target.value;
+            dispatch(gitRef(application.githubRepo + ':' + ref));
+        };
+
+        let compareLinkEl = <p>Loading compare link...</p>;
+        if (
+            lastDeployRefRequest && lastDeployRefRequest.status === FAILURE ||
+            toDeployRefRequest && toDeployRefRequest.status === FAILURE
+        ) {
+            compareLinkEl = (
+                <p className="text--red">{"Can't find the given branch in you git repository!"}</p>
+            );
+        }
+        if (
+            lastDeployRefRequest && lastDeployRefRequest.status === SUCCESS &&
+            toDeployRefRequest && toDeployRefRequest.status === SUCCESS
+        ) {
+            const compareLinkUrl = [
+                'https://github.com/', application.githubRepo, '/compare/',
+                lastDeployRefRequest.content.sha, '...', toDeployRefRequest.content.sha
+            ].join('');
+            compareLinkEl = (
+                <p>
+                    <a href={compareLinkUrl} target="_blank">
+                        View commits about to be deployed on GitHub
+                    </a>
+                </p>
+            );
+        }
+
         return (
             <div className="new-deployment form">
-                <h1 className="form__title">New Deployment</h1>
-
                 <div className="form__field">
                     <label>Branch</label>
-                    <input type="text" defaultValue={defaultBranch} />
+                    <input
+                        type="text"
+                        ref="newDeployBranch"
+                        defaultValue={defaultBranch}
+                        onBlur={onBranchUpdate}
+                    />
                 </div>
 
                 <div className="form__field">
                     <label>Tags</label>
-                    <input type="text" defaultValue={defaultTags} />
+                    <input
+                        type="text"
+                        ref="newDeployTags"
+                        defaultValue={defaultTags}
+                    />
                 </div>
+
+                {compareLinkEl}
+
+                <button className="btn" onClick={onClick}>
+                    Deploy!
+                </button>
             </div>
         );
     }
@@ -233,7 +305,7 @@ class Environment extends Component {
     }
 
     render() {
-        const {deploymentsRequest} = this.props;
+        const {deploymentsRequest, deploymentId} = this.props;
 
         if (!deploymentsRequest || deploymentsRequest.status === REQUEST) {
             return (
@@ -249,11 +321,17 @@ class Environment extends Component {
 
         const deployments = deploymentsRequest.content.results;
 
+        const newDeploymentCardClassName = classNames({
+            'deployment-card': true,
+            'deployment-card--new': true,
+            'deployment-card--active': deploymentId === 'new'
+        });
+
         return (
             <div className="environment">
                 <div className="environment__deployments">
                     <div
-                        className="deployment-card deployment-card--new"
+                        className={newDeploymentCardClassName}
                         onClick={this.onNewDeployment}
                     >
                         New Deployment &rarr;
@@ -266,7 +344,7 @@ class Environment extends Component {
                     ) : null}
                 </div>
                 <div className="environment__deployment">
-                    {this.state.creatingDeployment ? (
+                    {deploymentId === 'new' ? (
                         this.renderNewDeployment()
                     ) : (
                         this.renderDeployment()
@@ -292,7 +370,8 @@ function mapStateToProps(state, ownProps) {
         environment: application.environments[environmentId],
         deploymentsRequest: state.api.deployments.list,
         deploymentRequest: state.api.deployments.get[deploymentId],
-        deploymentLogRequest: state.api.deployments.log[deploymentId]
+        deploymentLogRequest: state.api.deployments.log[deploymentId],
+        gitRefRequests: state.api.git.ref
     };
 };
 

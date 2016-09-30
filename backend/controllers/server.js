@@ -1,10 +1,14 @@
 const AWS = require('aws-sdk');
 
-AWS.config.update({region:'us-east-1'});
-
 class ServerController {
-    constructor() {
+    constructor(config) {
         this.list = this.list.bind(this);
+
+        AWS.config.update({
+            accessKeyId: config.get('aws_access_key_id'),
+            secretAccessKey: config.get('aws_secret_access_key'),
+            region:'us-east-1'
+        });
     }
 
     list(req, res) {
@@ -52,6 +56,8 @@ class ServerController {
     }
 }
 
-ServerController.dependencies = [];
+ServerController.dependencies = [
+    'config'
+];
 
 module.exports = ServerController;

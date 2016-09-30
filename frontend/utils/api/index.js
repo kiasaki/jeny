@@ -4,6 +4,7 @@ import {merge} from 'ramda';
 import ApplicationsAPI from './applications';
 import DeploymentsAPI from './deployments';
 import ServersAPI from './servers';
+import GitAPI from './git';
 
 const API_VERSION = 'v1';
 
@@ -16,6 +17,7 @@ class APIClient {
         this.applications = new ApplicationsAPI(this);
         this.deployments = new DeploymentsAPI(this);
         this.servers = new ServersAPI(this);
+        this.git = new GitAPI(this);
     }
 
     config(config) {

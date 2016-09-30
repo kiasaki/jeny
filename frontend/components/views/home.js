@@ -9,10 +9,10 @@ class Home extends Component {
 
         dispatch(setTitle('Dashboard'));
         dispatch(setButtons([
-            {link: '/', label: 'General', active: true},
-            {link: '/d/lb', label: 'Load banlancer heath'},
-            {link: '/d/rl', label: 'Request load'},
-            {link: '/d/db', label: 'Database'}
+            {link: '/', label: 'Overview', active: true},
+            {link: '/dashboard/1', label: 'Stability'},
+            {link: '/dashboard/2', label: 'Availability'},
+            {link: '/dashboard/3', label: 'Performance'}
         ]));
     }
 

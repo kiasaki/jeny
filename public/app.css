@@ -19,6 +19,10 @@ html, body, .app, .view {
     box-sizing: border-box;
 }
 
+a {
+    color: #447bdc;
+}
+
 table.table {
     width: 100%;
     margin: 0;
@@ -61,6 +65,15 @@ table.table {
   content: "";
   display: table;
   clear: both;
+}
+
+.btn {
+    border: none;
+    border-radius: 3px;
+    background: #333;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    font-size: 1.4rem;
 }
 
 .unauthorized {
@@ -135,15 +148,6 @@ a.dropdown__item:hover {
 }
 
 
-.form {
-
-}
-.form__title {
-    font-weight: 300;
-    font-size: 1.8rem;
-    color: #888;
-    margin: 0 0 1.2rem;
-}
 .form__field {
     margin-bottom: 1.2rem;
 }
@@ -157,6 +161,8 @@ a.dropdown__item:hover {
     border: 1px solid #ccc;
     border-radius: 3px;
     font-size: 1.6rem;
+    width: 100%;
+    max-width: 300px;
 }
 .form__field input:focus {
     outline: none;

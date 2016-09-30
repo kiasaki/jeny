@@ -21,15 +21,18 @@ module.exports = function(container) {
 
     const DeploymentController = require('./controllers/deployment');
     const deploymentController = container.create(DeploymentController);
-    app.get('/api/v1/deployments', deploymentController.list);
-    app.get('/api/v1/deployments/:deploymentId',
-        deploymentController.get);
-    app.get('/api/v1/deployments/:deploymentId/log',
-        deploymentController.getLog);
+    app.get('/api/v1/deployments', ph(deploymentController.list));
+    app.get('/api/v1/deployments/:deploymentId', ph(deploymentController.get));
+    app.get('/api/v1/deployments/:deploymentId/log', ph(deploymentController.getLog));
+    app.post('/api/v1/deployments', ph(deploymentController.create));
 
     const ServerController = require('./controllers/server');
     const serverController = container.create(ServerController);
     app.get('/api/v1/servers', serverController.list);
+
+    const GitController = require('./controllers/git');
+    const gitController = container.create(GitController);
+    app.get('/api/v1/git/ref', ph(gitController.ref));
 
     app.get('/api/v1/', (req, res) => {
         res.json({version: 1});

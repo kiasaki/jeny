@@ -84,6 +84,12 @@ class DeploymentController {
             res.status(500).json({errors: [{message: err.message}]});
         });
     }
+
+    create(req, res) {
+        const {applicationId, environmentId, branch, tags} = req.body;
+
+        
+    }
 }
 
 DeploymentController.dependencies = [
